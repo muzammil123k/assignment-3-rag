@@ -1,18 +1,24 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: assignment-2-db
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: assignment-3-db
+    restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: assignment2
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: assignment3
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+      - pgdata_assign3:/var/lib/postgresql/data
+
+  # 🚨 NEW: The Embedding Microservice
+  embed-api:
+    build: ./embedding-service
+    container_name: assignment-3-embed-api
+    restart: always
+    ports:
+      - "8000:8000"
 
 volumes:
-  postgres_data:
+  pgdata_assign3:
