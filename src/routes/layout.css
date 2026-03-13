@@ -1,2 +1,42 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+@import 'highlight.js/styles/github-dark.css';
+
+/* Streaming cursor animation */
+@keyframes blink {
+	0%, 50% { opacity: 1; }
+	51%, 100% { opacity: 0; }
+}
+.streaming-cursor::after {
+	content: '';
+	display: inline-block;
+	width: 2px;
+	height: 1em;
+	background: currentColor;
+	margin-left: 2px;
+	vertical-align: text-bottom;
+	animation: blink 1s step-end infinite;
+}
+
+/* Code block styling */
+pre code.hljs {
+	border-radius: 0.5rem;
+	padding: 1rem;
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+/* Scrollbar styling */
+.chat-scroll::-webkit-scrollbar {
+	width: 6px;
+}
+.chat-scroll::-webkit-scrollbar-track {
+	background: transparent;
+}
+.chat-scroll::-webkit-scrollbar-thumb {
+	background: #cbd5e1;
+	border-radius: 3px;
+}
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+	background: #94a3b8;
+}

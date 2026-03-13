@@ -1,9 +1,7 @@
-import { AUTH_SECRET } from '$env/static/private';
 import { SvelteKitAuth } from '@auth/sveltekit';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '$lib/server/db';
 import { users, accounts, sessions, verificationTokens } from '$lib/server/db/schema';
-//import { AUTH_SECRET, GITHUB_ID, GITHUB_SECRET } from '$env/static/private';
 import { AUTH_SECRET, GITHUB_ID, GITHUB_SECRET, GOOGLE_ID, GOOGLE_SECRET } from '$env/static/private';
 import Credentials from '@auth/sveltekit/providers/credentials';
 import GitHub from '@auth/sveltekit/providers/github';
