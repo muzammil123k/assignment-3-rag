@@ -37,6 +37,7 @@
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/bcryptjs": "^3.0.0",
+		"@types/dompurify": "^3.2.0",
 		"@types/node": "^24",
 		"@vitest/browser-playwright": "^4.0.18",
 		"dotenv": "^17.3.1",
@@ -72,6 +73,7 @@
 		"@auth/sveltekit": "^1.11.1",
 		"ai": "^6.0.116",
 		"bcryptjs": "^3.0.3",
+		"dompurify": "^3.3.3",
 		"highlight.js": "^11.11.1",
 		"marked": "^17.0.4",
 		"marked-highlight": "^2.2.3"

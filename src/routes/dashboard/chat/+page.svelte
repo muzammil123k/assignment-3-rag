@@ -3,6 +3,7 @@
 	import { marked } from 'marked';
 	import { markedHighlight } from 'marked-highlight';
 	import hljs from 'highlight.js';
+	import DOMPurify from 'dompurify';
 
 	// Configure marked with syntax highlighting
 	marked.use(
@@ -325,7 +326,31 @@
 		if (!msg || msg.role !== 'user') return;
 
 		editingId = null;
-		// Send as new message with same parent as the original
+
+		// Fork: the new message gets the SAME parent as the original,
+		// so it becomes a sibling branch, not appended at the end.
+		const forkParentId = msg.parentId;
+
+		// Trim active path to end at the fork point's parent
+		if (forkParentId) {
+			// Temporarily override activeBranches so sendMessage sees the correct parent
+			const pathToParent = getActivePath(allMessages, activeBranches);
+			const parentIdx = pathToParent.findIndex((m) => m.id === forkParentId);
+			if (parentIdx >= 0) {
+				// Truncate activeBranches for children beyond the fork point
+				const truncated = { ...activeBranches };
+				for (const m of pathToParent.slice(parentIdx + 1)) {
+					delete truncated[m.id];
+				}
+				// Remove the branch pointer so sendMessage picks forkParentId as last in path
+				delete truncated[forkParentId];
+				activeBranches = truncated;
+			}
+		} else {
+			// Editing the very first message — clear all branches
+			activeBranches = {};
+		}
+
 		await sendMessage(newText);
 	}
 
@@ -365,9 +390,10 @@
 
 	function renderMarkdown(text: string): string {
 		try {
-			return marked.parse(text) as string;
+			const raw = marked.parse(text) as string;
+			return DOMPurify.sanitize(raw);
 		} catch {
-			return text;
+			return DOMPurify.sanitize(text);
 		}
 	}
 
@@ -498,7 +524,7 @@
 		</div>
 
 		<!-- Messages -->
-		<div bind:this={chatContainer} class="chat-scroll flex-1 overflow-y-auto px-4 py-6">
+		<div bind:this={chatContainer} class="chat-scroll flex-1 overflow-y-auto px-4 py-6" aria-live="polite" aria-relevant="additions">
 			{#if activePath.length === 0 && !isStreaming}
 				<!-- Empty state -->
 				<div class="flex h-full flex-col items-center justify-center text-center">
@@ -725,7 +751,7 @@
 
 		<!-- Error display -->
 		{#if error}
-			<div class="mx-4 mb-2 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
+			<div role="alert" class="mx-4 mb-2 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
 				{error}
 				<button onclick={() => (error = null)} class="ml-2 font-medium underline">Dismiss</button>
 			</div>

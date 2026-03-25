@@ -12,13 +12,19 @@ services:
     volumes:
       - pgdata_assign3:/var/lib/postgresql/data
 
-  # 🚨 NEW: The Embedding Microservice
+  # Python Embedding Microservice
   embed-api:
     build: ./embedding-service
     container_name: assignment-3-embed-api
     restart: always
     ports:
       - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
   pgdata_assign3:
